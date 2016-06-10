@@ -1,0 +1,23 @@
+{
+    "name": "lagdo/jaxon-zend",
+    "type": "library",
+    "description": "Jaxon library integration for the Zend Framework 2",
+    "authors": [
+        {"name": "Thierry Feuzeu"}
+    ],
+    "homepage": "https://github.com/lagdo/jaxon-zend",
+    "license": "BSD-2-Clause",
+    "keywords": ["Jaxon", "Xajax", "Ajax", "PHP", "Framework", "Zend"],
+    "support": {
+        "issues": "https://github.com/lagdo/jaxon-zend/issues",
+        "source": "https://github.com/lagdo/jaxon-zend"
+    },
+    "require": {
+        "lagdo/jaxon-core": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jaxon\\Zend\\": "src/"
+        }
+    }
+}
