@@ -8,6 +8,19 @@ class Jaxon extends AbstractPlugin
 {
     use \Jaxon\Framework\JaxonTrait;
 
+    /**
+     * Create a new Jaxon instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // Initialize the properties inherited from JaxonTrait.
+        $this->jaxon = jaxon();
+        $this->response = new \Jaxon\Zend\Response();
+        $this->view = new \Jaxon\Zend\View();
+    }
+
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';
@@ -27,12 +40,10 @@ class Jaxon extends AbstractPlugin
         }
         $this->setupCalled = true;
 
-        $this->jaxon = jaxon();
-        $this->response = new \Jaxon\Zend\Response();
-        $this->view = new \Jaxon\Zend\View();
-
+        $debug = (getenv('APP_ENV') != 'production');
         $appPath = rtrim(getcwd(), '/');
-        $debug = true;
+        $baseUrl = $_SERVER['SERVER_NAME'];
+        $baseDir = $_SERVER['DOCUMENT_ROOT'];
 
         // Use the Composer autoloader
         $this->jaxon->useComposerAutoloader();
@@ -40,8 +51,8 @@ class Jaxon extends AbstractPlugin
         $this->jaxon->setOptions(array(
             'js.app.extern' => !$debug,
             'js.app.minify' => !$debug,
-            'js.app.uri' => $this->baseUrl . '/jaxon/js',
-            'js.app.dir' => $this->baseDir . '/jaxon/js',
+            'js.app.uri' => '//' . $baseUrl . '/jaxon/js',
+            'js.app.dir' => $baseDir . '/jaxon/js',
         ));
         // Jaxon library settings
         $config = $this->jaxon->readConfigFile($appPath . '/config/jaxon.config.php', 'lib');
