@@ -13,17 +13,12 @@ class Jaxon extends AbstractPlugin
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($renderer)
     {
         // Initialize the properties inherited from JaxonTrait.
         $this->jaxon = jaxon();
         $this->response = new \Jaxon\Zend\Response();
-        $this->view = new \Jaxon\Zend\View();
-    }
-
-    public function getConfig()
-    {
-        return include __DIR__ . '/../config/module.config.php';
+        $this->view = new \Jaxon\Zend\View($renderer);
     }
 
     /**

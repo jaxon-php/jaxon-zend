@@ -19,20 +19,11 @@ Add the following lines in the `composer.json` file, and run the `composer updat
 }
 ```
 
-Add the Jaxon module to the `modules` entry in the `config/application.config.php` config file.
+Add the Jaxon module to the `modules` entry in the `config/application.config.php` or `config/modules.config.php` config file.
 ```php
     'modules' => array(
         'Application',
         'Jaxon\Zend',
-    ),
-```
-
-Add the Jaxon controller plugin to the `controller_plugins` entry in the `config/module.config.php` config file of the `Application` module.
-```php
-    'controller_plugins' => array(
-        'invokables' => array(
-            'jaxon' => 'Jaxon\Zend\Controller\Plugin\Jaxon',
-        )
     ),
 ```
 
@@ -69,7 +60,7 @@ class DemoController extends AbstractActionController
     public function indexAction()
     {
         // Call the Jaxon module
-        $jaxon = $this->jaxon();
+        $jaxon = $this->getServiceLocator()->get('JaxonPlugin');
         $jaxon->register();
 
         $view = new ViewModel(array(

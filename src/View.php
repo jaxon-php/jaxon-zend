@@ -2,16 +2,18 @@
 
 namespace Jaxon\Zend;
 
+use Zend\View\Renderer\RendererInterface;
+use Zend\View\Model\ViewModel;
+
 class View
 {
-    protected static $data;
+    protected $data;
+    protected $renderer;
 
-    public function __construct()
+    public function __construct(RendererInterface $renderer)
     {
-        if(!is_array(self::$data))
-        {
-            self::$data = array();
-        }
+        $this->data = array();
+        $this->renderer = $renderer;
     }
 
     /**
@@ -24,7 +26,7 @@ class View
      */
     public function share($name, $value)
     {
-        self::$data[$name] = $value;
+        $this->data[$name] = $value;
     }
 
     /**
@@ -37,8 +39,9 @@ class View
      */
     public function render($template, array $data = array())
     {
-        $view = new \ViewModel(array_merge(self::$data, $data));
+        $view = new ViewModel(array_merge($this->data, $data));
         $view->setTemplate($template);
-        return $view;
+        $view->setTerminal(true);
+        return trim($this->renderer->render($view), "\n");
     }
 }

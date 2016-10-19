@@ -6,9 +6,9 @@ return array(
             'JaxonController' => 'Jaxon\Zend\Controller\JaxonController',
         ),
     ),
-    'controller_plugins' => array(
-        'invokables' => array(
-            'jaxon' => 'Jaxon\Zend\Controller\Plugin\Jaxon',
+    'service_manager' => array(
+        'factories' => array(
+            'JaxonPlugin' => 'Jaxon\Zend\Controller\Plugin\Factory\JaxonPluginFactory',
         )
     ),
     'router' => array(
