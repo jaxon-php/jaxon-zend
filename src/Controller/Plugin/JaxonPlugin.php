@@ -4,7 +4,7 @@ namespace Jaxon\Zend\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
-class Jaxon extends AbstractPlugin
+class JaxonPlugin extends AbstractPlugin
 {
     use \Jaxon\Framework\JaxonTrait;
 

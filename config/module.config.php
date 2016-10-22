@@ -2,8 +2,8 @@
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'JaxonController' => 'Jaxon\Zend\Controller\JaxonController',
+        'factories' => array(
+            'Jaxon\Zend\Controller\Jaxon' => Jaxon\Zend\Factory\JaxonControllerFactory::class,
         ),
     ),
     'service_manager' => array(
@@ -19,7 +19,7 @@ return array(
                 'options' => array(
                     'route'    => '/jaxon',
                     'defaults' => array(
-                        'controller' => 'JaxonController',
+                        'controller' => 'Jaxon\Zend\Controller\Jaxon',
                         'action'     => 'index',
                     ),
                 ),

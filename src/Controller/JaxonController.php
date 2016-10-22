@@ -4,17 +4,28 @@ namespace Jaxon\Zend\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Jaxon\Zend\Controller\Plugin\JaxonPlugin;
 
 class JaxonController extends AbstractActionController
 {
+    /**
+     * @var \Jaxon\Zend\Controller\Plugin\JaxonPlugin
+     */
+    protected $jaxon;
+
+    public function __construct(JaxonPlugin $jaxon)
+    {
+        $this->jaxon = $jaxon;
+    }
+
     public function indexAction()
     {
         // Get the Jaxon plugin
-        $jaxon = $this->getServiceLocator()->get('JaxonPlugin');
-        // Process Jaxon request
-        if($jaxon->canProcessRequest())
+        // $jaxon = $this->getServiceLocator()->get('JaxonPlugin');
+        // Process the Jaxon request
+        if($this->jaxon->canProcessRequest())
         {
-            $jaxon->processRequest();
+            $this->jaxon->processRequest();
         }
     }
 }
