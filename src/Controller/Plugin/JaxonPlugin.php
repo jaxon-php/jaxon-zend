@@ -28,16 +28,13 @@ class JaxonPlugin extends AbstractPlugin
      */
     public function setup()
     {
-        // This function should be called only once
-        if(($this->setupCalled))
-        {
-            return;
-        }
-        $this->setupCalled = true;
-
+        // The application debug option
         $debug = (getenv('APP_ENV') != 'production');
+        // The application root dir
         $appPath = rtrim(getcwd(), '/');
+        // The application URL
         $baseUrl = $_SERVER['SERVER_NAME'];
+        // The application web dir
         $baseDir = $_SERVER['DOCUMENT_ROOT'];
 
         // Use the Composer autoloader
