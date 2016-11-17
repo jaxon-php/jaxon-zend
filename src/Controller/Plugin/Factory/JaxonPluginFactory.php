@@ -18,8 +18,6 @@ class JaxonPluginFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         // Create the JaxonPlugin, with the ViewRenderer as parameter
-        $jaxon = new JaxonPlugin($serviceLocator->get('ViewRenderer'));
-        $jaxon->setup();
-        return $jaxon;
+        return new JaxonPlugin($serviceLocator->get('ViewRenderer'));
     }
 }

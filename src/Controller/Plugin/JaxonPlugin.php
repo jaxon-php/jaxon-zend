@@ -3,10 +3,18 @@
 namespace Jaxon\Zend\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\Http\Response as HttpResponse;
 
 class JaxonPlugin extends AbstractPlugin
 {
-    use \Jaxon\Framework\JaxonTrait;
+    use \Jaxon\Framework\PluginTrait;
+
+    /**
+     * The template engine
+     * 
+     * @var \Zend\View\Renderer\RendererInterface
+     */
+    protected $renderer;
 
     /**
      * Create a new Jaxon instance.
@@ -15,10 +23,7 @@ class JaxonPlugin extends AbstractPlugin
      */
     public function __construct($renderer)
     {
-        // Initialize the properties inherited from JaxonTrait.
-        $this->jaxon = jaxon();
-        $this->response = new \Jaxon\Zend\Response();
-        $this->view = new \Jaxon\Zend\View($renderer);
+        $this->renderer = $renderer;
     }
 
     /**
@@ -28,6 +33,7 @@ class JaxonPlugin extends AbstractPlugin
      */
     public function setup()
     {
+        $this->view = new \Jaxon\Zend\View($this->renderer);
         // The application debug option
         $debug = (getenv('APP_ENV') != 'production');
         // The application root dir
@@ -37,8 +43,6 @@ class JaxonPlugin extends AbstractPlugin
         // The application web dir
         $baseDir = $_SERVER['DOCUMENT_ROOT'];
 
-        // Use the Composer autoloader
-        $this->jaxon->useComposerAutoloader();
         // Jaxon library default options
         $this->jaxon->setOptions(array(
             'js.app.extern' => !$debug,
@@ -72,5 +76,26 @@ class JaxonPlugin extends AbstractPlugin
         }
         // Register the default Jaxon class directory
         $this->jaxon->addClassDir($controllerDir, $namespace, $excluded);
+    }
+
+    /**
+     * Wrap the Jaxon response into an HTTP response.
+     *
+     * @param  $code        The HTTP Response code
+     *
+     * @return \Zend\Http\Response
+     */
+    public function httpResponse($code = '200')
+    {
+        // Send HTTP Headers
+        $this->response->sendHeaders();
+        // Create and return a ZF2 HTTP response
+        $response = new HttpResponse();
+        /*$headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', $this->response->getContentType() .
+            '; charset=' . $this->response->getCharacterEncoding());*/
+        $response->setStatusCode(intval($code));
+        $response->setContent($this->response->getOutput());
+        return $response;
     }
 }
