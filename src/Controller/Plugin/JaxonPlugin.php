@@ -2,28 +2,27 @@
 
 namespace Jaxon\Zend\Controller\Plugin;
 
+use Jaxon\Config\Php as Config;
+
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Http\Response as HttpResponse;
+use Zend\View\Renderer\RendererInterface;
 
 class JaxonPlugin extends AbstractPlugin
 {
     use \Jaxon\Module\Traits\Module;
 
     /**
-     * The template engine
-     * 
-     * @var \Zend\View\Renderer\RendererInterface
-     */
-    protected $renderer;
-
-    /**
-     * Create a new Jaxon instance.
+     * Create the Jaxon view renderer, using the Zend renderer.
      *
      * @return void
      */
-    public function __construct($renderer)
+    public function jaxonSetRenderer(RendererInterface $renderer)
     {
-        $this->renderer = $renderer;
+        if($this->jaxonViewRenderer == null)
+        {
+            $this->jaxonViewRenderer = new \Jaxon\Zend\View($renderer);
+        }
     }
 
     /**
@@ -31,54 +30,26 @@ class JaxonPlugin extends AbstractPlugin
      *
      * @return void
      */
-    protected function setup()
+    protected function jaxonSetup()
     {
         // The application debug option
-        $debug = (getenv('APP_ENV') != 'production');
+        $isDebug = (getenv('APP_ENV') != 'production');
         // The application root dir
         $appPath = rtrim(getcwd(), '/');
         // The application URL
-        $baseUrl = $_SERVER['SERVER_NAME'];
+        $baseUrl = '//' . $_SERVER['SERVER_NAME'];
         // The application web dir
         $baseDir = $_SERVER['DOCUMENT_ROOT'];
 
         // Read and set the config options from the config file
-        $jaxon = jaxon();
-        $this->appConfig = $jaxon->readConfigFile($appPath . '/config/jaxon.config.php', 'lib', 'app');
+        $this->appConfig = Config::read($appPath . '/config/jaxon.config.php', 'lib', 'app');
 
-        // Jaxon library settings
-        // Default values
-        if(!$jaxon->hasOption('js.app.extern'))
-        {
-            $jaxon->setOption('js.app.extern', !$debug);
-        }
-        if(!$jaxon->hasOption('js.app.minify'))
-        {
-            $jaxon->setOption('js.app.minify', !$debug);
-        }
-        if(!$jaxon->hasOption('js.app.uri'))
-        {
-            $jaxon->setOption('js.app.uri', '//' . $baseUrl . '/jaxon/js');
-        }
-        if(!$jaxon->hasOption('js.app.dir'))
-        {
-            $jaxon->setOption('js.app.dir', $baseDir . '/jaxon/js');
-        }
+        // Jaxon library default settings
+        $this->setLibraryOptions(!$isDebug, !$isDebug, $baseUrl . '/jaxon/js', $baseDir . '/jaxon/js');
 
-        // Jaxon application settings
-        // Default values
-        if(!$this->appConfig->hasOption('controllers.directory'))
-        {
-            $this->appConfig->setOption('controllers.directory', $appPath . '/jaxon/Controllers');
-        }
-        if(!$this->appConfig->hasOption('controllers.namespace'))
-        {
-            $this->appConfig->setOption('controllers.namespace', '\\Jaxon\\App');
-        }
-        if(!$this->appConfig->hasOption('controllers.protected') || !is_array($this->appConfig->getOption('protected')))
-        {
-            $this->appConfig->setOption('controllers.protected', array());
-        }
+        // Jaxon application default settings
+        $this->setApplicationOptions($appPath . '/jaxon/Controller', '\\Jaxon\\App');
+
         // Jaxon controller class
         $this->setControllerClass('\\Jaxon\\Zend\\Controller');
     }
@@ -90,7 +61,7 @@ class JaxonPlugin extends AbstractPlugin
      *
      * @return void
      */
-    protected function check()
+    protected function jaxonCheck()
     {
         // Todo: check the mandatory options
     }
@@ -100,13 +71,9 @@ class JaxonPlugin extends AbstractPlugin
      *
      * @return void
      */
-    protected function view()
+    protected function jaxonView()
     {
-        if($this->viewRenderer == null)
-        {
-            $this->viewRenderer = new \Jaxon\Zend\View($this->renderer);
-        }
-        return $this->viewRenderer;
+        return $this->jaxonViewRenderer;
     }
 
     /**
