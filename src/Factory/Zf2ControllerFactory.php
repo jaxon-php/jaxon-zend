@@ -4,9 +4,8 @@ namespace Jaxon\Zend\Factory;
 
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
-use Jaxon\Zend\Controller\JaxonController;
 
-class JaxonControllerFactory implements FactoryInterface
+class Zf2ControllerFactory implements FactoryInterface
 {
     /**
      * Create a Jaxon Controller
@@ -32,7 +31,10 @@ class JaxonControllerFactory implements FactoryInterface
         {
             $controllerClass .= 'Controller';
         }
-        // Create the Jaxon Controller, passing the JaxonPlugin as parameter
-        return new $controllerClass($sm->get('JaxonPlugin'));
+        // Get and configure the Jaxon plugin
+        $jaxonPlugin = $sm->get('JaxonPlugin');
+        $jaxonPlugin->jaxonSetRenderer($sm->get('ViewRenderer'));
+        // Create the Controller, passing the JaxonPlugin as parameter
+        return new $controllerClass($jaxonPlugin);
     }
 }
