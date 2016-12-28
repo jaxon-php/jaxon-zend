@@ -15,7 +15,7 @@ Installation
 Add the following lines in the `composer.json` file, and run the `composer update` command.
 ```json
 "require": {
-    "jaxon-php/jaxon-zend": "1.0.*"
+    "jaxon-php/jaxon-zend": "dev-master"
 }
 ```
 
@@ -29,12 +29,16 @@ Add the Jaxon module to the `modules` entry in the `config/application.config.ph
 
 ### Zend Framework 2
 
+Edit the module/Application/config/module.config.php as follow.
+
 1. Import the Jaxon classes into the current namespace
+
 ```php
 use Jaxon\Zend\Factory\Zf2ControllerFactory;
 ```
 
 2. Register the Jaxon plugin with the Service Manager
+
 ```php
     'service_manager' => array(
         'invokables' => array(
@@ -44,6 +48,7 @@ use Jaxon\Zend\Factory\Zf2ControllerFactory;
 ```
 
 3. Use the provided factory to create both your application controller and the Jaxon ZF controller.
+
 ```php
     'controllers' => array(
         'factories' => array(
@@ -56,6 +61,7 @@ use Jaxon\Zend\Factory\Zf2ControllerFactory;
 This factory injects the Jaxon plugin into the ZF controller constructor.
 
 4. Route the Jaxon request URI to the Jaxon Controller
+
 ```php
     'router' => array(
         'routes' => array(
@@ -76,7 +82,10 @@ This factory injects the Jaxon plugin into the ZF controller constructor.
 
 ### Zend Framework 3
 
+Edit the module/Application/config/module.config.php file as follow.
+
 1. Import the Jaxon classes into the current namespace
+
 ```php
 use Jaxon\Zend\Factory\Zf3ControllerFactory;
 use Jaxon\Zend\Controller\Plugin\JaxonPlugin;
@@ -84,6 +93,7 @@ use Jaxon\Zend\Controller\JaxonController;
 ```
 
 2. Register the Jaxon plugin with the Service Manager
+
 ```php
     'service_manager' => array(
         'invokables' => array(
@@ -104,6 +114,7 @@ Or
 ```
 
 3. Use the provided factory to create both your application controller and the Jaxon ZF controller.
+
 ```php
     'controllers' => [
         'factories' => [
@@ -116,6 +127,7 @@ Or
 This factory injects the Jaxon plugin into the ZF controller constructor.
 
 4. Route the Jaxon request URI to the Jaxon Controller
+
 ```php
     'router' => [
         'routes' => [
