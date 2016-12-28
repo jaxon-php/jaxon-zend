@@ -1,7 +1,7 @@
 Jaxon Library for Zend Framework
 ================================
 
-This package integrates the [Jaxon library](https://github.com/jaxon-php/jaxon-core) with the Zend Framework 2.
+This package integrates the [Jaxon library](https://github.com/jaxon-php/jaxon-core) with the Zend Framework 2.3+ and 3.
 
 Features
 --------
@@ -27,11 +27,118 @@ Add the Jaxon module to the `modules` entry in the `config/application.config.ph
     ),
 ```
 
+### Zend Framework 2
+
+1. Import the Jaxon classes into the current namespace
+```php
+use Jaxon\Zend\Factory\Zf2ControllerFactory;
+```
+
+2. Register the Jaxon plugin with the Service Manager
+```php
+    'service_manager' => array(
+        'invokables' => array(
+            'JaxonPlugin' => 'Jaxon\Zend\Controller\Plugin\JaxonPlugin',
+        ),
+    ),
+```
+
+3. Use the provided factory to create both your application controller and the Jaxon ZF controller.
+```php
+    'controllers' => array(
+        'factories' => array(
+            'Application\Controller\Demo' => Zf2ControllerFactory::class,
+            'Jaxon\Zend\Controller\Jaxon' => Zf2ControllerFactory::class,
+        ),
+    ),
+```
+
+This factory injects the Jaxon plugin into the ZF controller constructor.
+
+4. Route the Jaxon request URI to the Jaxon Controller
+```php
+    'router' => array(
+        'routes' => array(
+            // Route to the Jaxon request processor
+            'jaxon' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/jaxon',
+                    'defaults' => array(
+                        'controller' => 'Jaxon\Zend\Controller\Jaxon',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+        ),
+    ),
+```
+
+### Zend Framework 3
+
+1. Import the Jaxon classes into the current namespace
+```php
+use Jaxon\Zend\Factory\Zf3ControllerFactory;
+use Jaxon\Zend\Controller\Plugin\JaxonPlugin;
+use Jaxon\Zend\Controller\JaxonController;
+```
+
+2. Register the Jaxon plugin with the Service Manager
+```php
+    'service_manager' => array(
+        'invokables' => array(
+            'JaxonPlugin' => JaxonPlugin::class,
+        ),
+    ),
+```
+Or
+```php
+    'service_manager' => array(
+        'factories' => array(
+            JaxonPlugin::class => InvokableFactory::class,
+        ),
+        'aliases' => array(
+            'JaxonPlugin' => JaxonPlugin::class,
+        ),
+    ),
+```
+
+3. Use the provided factory to create both your application controller and the Jaxon ZF controller.
+```php
+    'controllers' => [
+        'factories' => [
+            Controller\DemoController::class => Zf3ControllerFactory::class,
+            JaxonController::class => Zf3ControllerFactory::class,
+        ],
+    ],
+```
+
+This factory injects the Jaxon plugin into the ZF controller constructor.
+
+4. Route the Jaxon request URI to the Jaxon Controller
+```php
+    'router' => [
+        'routes' => [
+            // Route to the Jaxon request processor
+            'jaxon' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route'    => '/jaxon',
+                    'defaults' => [
+                        'controller' => JaxonController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+        ],
+    ],
+```
+
 Configuration
 -------------
 
 The config of the Jaxon library is defined in the `config/jaxon.config.php` file.
-A sample config file is provided in the examples repo online at [https://github.com/jaxon-php/jaxon-examples/blob/master/frameworks/zend/config/jaxon.config.php](https://github.com/jaxon-php/jaxon-examples/blob/master/frameworks/zend/config/jaxon.config.php).
+A sample config file is provided in [this repo](github.com/jaxon-php/jaxon-zend/blob/master/config/module.config.php).
 
 The settings in the `config/jaxon.config.php` config file are separated into two sections.
 The options in the `lib` section are those of the Jaxon core library, while the options in the `app` sections are those of the Zend Framework application.
@@ -40,9 +147,10 @@ The following options can be defined in the `app` section of the config file.
 
 | Name      | Default value   | Description |
 |-----------|-----------------|-------------|
-| dir       | {app_dir}/jaxon | The directory of the Jaxon classes |
-| namespace | \Jaxon\App      | The namespace of the Jaxon classes |
-| excluded  | empty array     | Prevent Jaxon from exporting some methods |
+| controllers.directory | {app_dir}/jaxon/Controller | The directory of the Jaxon classes |
+| controllers.namespace | \Jaxon\App      | The namespace of the Jaxon classes |
+| controllers.separator | .               | The separator in Jaxon class names |
+| controllers.protected | empty array     | Prevent Jaxon from exporting some methods |
 | | | |
 
 Usage
@@ -54,48 +162,16 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Jaxon\Zend\Controller\Plugin\JaxonPlugin;
 
 class DemoController extends AbstractActionController
 {
-    public function indexAction()
-    {
-        // Call the Jaxon module
-        $jaxon = $this->getServiceLocator()->get('JaxonPlugin');
-        $jaxon->register();
-
-        $view = new ViewModel(array(
-            'JaxonCss' => $jaxon->css(),
-            'JaxonJs' => $jaxon->js(),
-            'JaxonScript' => $jaxon->script(),
-        ));
-        $view->setTemplate('demo/index');
-        return $view;
-    }
-}
-```
-
-Before it prints the page, the controller makes a call to `$jaxon->register()` to export the Jaxon classes.
-Then it calls the `$jaxon->css()`, `$jaxon->js()` and `$jaxon->script()` functions to get the CSS and javascript codes generated by Jaxon, which it inserts in the page.
-
-As an alternative, the controller can take the Jaxon plugin as a parameter of its constructor.
-In this case, the controller must be created using the Jaxon factory.
-
-In the `config/modules.config.php` config file.
-```php
-    'controllers' => array(
-        'factories' => array(
-            'Application\Controller\Demo' => \Jaxon\Zend\Factory\JaxonControllerFactory::class,
-        ),
-    ),
-```
-
-And the controller.
-```php
-class DemoController extends AbstractActionController
-{
+    /**
+     * @var \Jaxon\Zend\Controller\Plugin\JaxonPlugin
+     */
     protected $jaxon;
 
-    public function __construct(\Jaxon\Zend\Controller\Plugin\JaxonPlugin $jaxon)
+    public function __construct(JaxonPlugin $jaxon)
     {
         $this->jaxon = $jaxon;
     }
@@ -106,9 +182,9 @@ class DemoController extends AbstractActionController
         $this->jaxon->register();
 
         $view = new ViewModel(array(
-            'JaxonCss' => $this->jaxon->css(),
-            'JaxonJs' => $this->jaxon->js(),
-            'JaxonScript' => $this->jaxon->script(),
+            'jaxonCss' => $this->jaxon->css(),
+            'jaxonJs' => $this->jaxon->js(),
+            'jaxonScript' => $this->jaxon->script(),
         ));
         $view->setTemplate('demo/index');
         return $view;
@@ -116,18 +192,17 @@ class DemoController extends AbstractActionController
 }
 ```
 
-If there's already a custom factory, the Jaxon plugin shall be added to the controller's constructor parameters.
-```php
-        $jaxon = $serviceManager->get('JaxonPlugin');
-```
+Before it prints the page, the controller makes a call to `$jaxon->register()` to export the Jaxon classes.
+Then it calls the `$jaxon->css()`, `$jaxon->js()` and `$jaxon->script()` functions to get the CSS and javascript codes generated by Jaxon, which it inserts in the page.
 
 ### The Jaxon classes
 
-The Jaxon classes of the application must all be located in the directory indicated by the `app.dir` option in the `config/jaxon.config.php` config file.
-If there is a namespace associated, the `app.namespace` option should be set accordingly.
-The `app.namespace` option must be explicitely set to `null`, `false` or an empty string if there is no namespace.
+The Jaxon classes must inherit from `\Jaxon\Zend\Controller`.
 
-By default, the Jaxon classes are loaded from the `jaxon` dir at the root of the Zend Framework application, and the associated namespace is `\Jaxon\App`.
+The Jaxon classes of the application must all be located in the directory indicated by the `app.controllers.directory` option in the `config/jaxon.config.php` config file.
+If there is a namespace associated, the `app.controllers.namespace` option should be set accordingly.
+
+By default, the Jaxon classes are loaded from the `jaxon/Controller` dir at the root of the Zend Framework application, and the associated namespace is `\Jaxon\App`.
 
 Contribute
 ----------
@@ -138,4 +213,4 @@ Contribute
 License
 -------
 
-The project is licensed under the BSD license.
+The package is licensed under the BSD license.
