@@ -31,13 +31,13 @@ Add the Jaxon module to the `modules` entry in the `config/application.config.ph
 
 Edit the module/Application/config/module.config.php as follow.
 
-1. Import the Jaxon classes into the current namespace
+ 1. Import the Jaxon classes into the current namespace
 
 ```php
 use Jaxon\Zend\Factory\Zf2ControllerFactory;
 ```
 
-2. Register the Jaxon plugin with the Service Manager
+ 2. Register the Jaxon plugin with the Service Manager
 
 ```php
     'service_manager' => array(
@@ -47,7 +47,7 @@ use Jaxon\Zend\Factory\Zf2ControllerFactory;
     ),
 ```
 
-3. Use the provided factory to create both your application controller and the Jaxon ZF controller.
+ 3. Use the provided factory to create both the application controller and the Jaxon ZF controller.
 
 ```php
     'controllers' => array(
@@ -60,7 +60,7 @@ use Jaxon\Zend\Factory\Zf2ControllerFactory;
 
 This factory injects the Jaxon plugin into the ZF controller constructor.
 
-4. Route the Jaxon request URI to the Jaxon Controller
+ 4. Route the Jaxon request URI to the Jaxon Controller
 
 ```php
     'router' => array(
@@ -113,7 +113,7 @@ Or
     ),
 ```
 
-3. Use the provided factory to create both your application controller and the Jaxon ZF controller.
+3. Use the provided factory to create both the application controller and the Jaxon ZF controller.
 
 ```php
     'controllers' => [
