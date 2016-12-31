@@ -15,7 +15,7 @@ Installation
 Add the following lines in the `composer.json` file, and run the `composer update` command.
 ```json
 "require": {
-    "jaxon-php/jaxon-zend": "dev-master"
+    "jaxon-php/jaxon-zend": "~2.0"
 }
 ```
 
