@@ -5,43 +5,32 @@ namespace Jaxon\Zend;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Model\ViewModel;
 
-class View
+use Jaxon\Module\View\Store;
+use Jaxon\Module\View\Facade;
+
+class View extends Facade
 {
-    protected $data;
     protected $renderer;
 
     public function __construct(RendererInterface $renderer)
     {
-        $this->data = array();
+        parent::__construct();
         $this->renderer = $renderer;
     }
 
     /**
-     * Make a piece of data available for all views
-     *
-     * @param string        $name            The data name
-     * @param string        $value            The data value
+     * Render a view
      * 
-     * @return void
-     */
-    public function share($name, $value)
-    {
-        $this->data[$name] = $value;
-    }
-
-    /**
-     * Render a template
-     *
-     * @param string        $template        The template path
-     * @param string        $data            The template data
+     * @param Store         $store        A store populated with the view data
      * 
-     * @return mixed        The rendered template
+     * @return string        The string representation of the view
      */
-    public function render($template, array $data = array())
+    public function make(Store $store)
     {
-        $view = new ViewModel(array_merge($this->data, $data));
-        $view->setTemplate($template);
+        // Render the view
+        $view = new ViewModel($store->getViewData());
+        $view->setTemplate($store->getViewPath());
         $view->setTerminal(true);
-        return trim($this->renderer->render($view), "\n");
+        return trim($this->renderer->render($view), " \t\n");
     }
 }
