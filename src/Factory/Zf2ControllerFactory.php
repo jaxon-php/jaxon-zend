@@ -33,7 +33,7 @@ class Zf2ControllerFactory implements FactoryInterface
         }
         // Get and configure the Jaxon plugin
         $jaxonPlugin = $sm->get('JaxonPlugin');
-        $jaxonPlugin->jaxonSetRenderer($sm->get('ViewRenderer'));
+        $jaxonPlugin->setZendViewRenderer($sm->get('ViewRenderer'));
         // Create the Controller, passing the JaxonPlugin as parameter
         return new $controllerClass($jaxonPlugin);
     }

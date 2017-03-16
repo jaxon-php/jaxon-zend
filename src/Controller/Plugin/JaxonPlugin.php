@@ -13,16 +13,22 @@ class JaxonPlugin extends AbstractPlugin
     use \Jaxon\Module\Traits\Module;
 
     /**
+     * The Zend View Renderer
+     *
+     * @var RendererInterface
+     */
+    private $xViewRenderer = null;
+
+    /**
      * Create the Jaxon view renderer, using the Zend renderer.
+     *
+     * @param  $xRenderer        The Zend Framework view renderer
      *
      * @return void
      */
-    public function jaxonSetRenderer(RendererInterface $renderer)
+    public function setZendViewRenderer(RendererInterface $xRenderer)
     {
-        if($this->jaxonViewRenderer == null)
-        {
-            $this->jaxonViewRenderer = new \Jaxon\Zend\View($renderer);
-        }
+        $this->xViewRenderer = $xRenderer;
     }
 
     /**
@@ -52,6 +58,12 @@ class JaxonPlugin extends AbstractPlugin
 
         // Jaxon controller class
         $this->setControllerClass('\\Jaxon\\Zend\\Controller');
+
+        // Set the view
+        $renderer = $this->xViewRenderer;
+        $this->setJaxonView(function() use($renderer) {
+            return new \Jaxon\Zend\View($renderer);
+        });
     }
 
     /**
@@ -64,16 +76,6 @@ class JaxonPlugin extends AbstractPlugin
     protected function jaxonCheck()
     {
         // Todo: check the mandatory options
-    }
-
-    /**
-     * Return the view renderer.
-     *
-     * @return void
-     */
-    protected function jaxonView()
-    {
-        return $this->jaxonViewRenderer;
     }
 
     /**

@@ -18,7 +18,7 @@ class Zf3ControllerFactory implements FactoryInterface
     {
         // Get and configure the Jaxon plugin
         $jaxonPlugin = $container->get('JaxonPlugin');
-        $jaxonPlugin->jaxonSetRenderer($container->get('ViewRenderer'));
+        $jaxonPlugin->setZendViewRenderer($container->get('ViewRenderer'));
         // Create the Controller, passing the JaxonPlugin as parameter
         return new $requestedName($jaxonPlugin);
     }
