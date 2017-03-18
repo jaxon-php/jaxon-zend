@@ -64,6 +64,11 @@ class JaxonPlugin extends AbstractPlugin
         $this->setJaxonView(function() use($renderer) {
             return new \Jaxon\Zend\View($renderer);
         });
+
+        // Set the session
+        $this->setJaxonSession(function(){
+            return new \Jaxon\Zend\Session();
+        });
     }
 
     /**

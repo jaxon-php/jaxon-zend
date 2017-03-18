@@ -20,8 +20,6 @@ class JaxonController extends AbstractActionController
 
     public function indexAction()
     {
-        // Get the Jaxon plugin
-        // $jaxon = $this->getServiceLocator()->get('JaxonPlugin');
         // Process the Jaxon request
         if($this->jaxon->canProcessRequest())
         {
