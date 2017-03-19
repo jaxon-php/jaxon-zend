@@ -56,9 +56,6 @@ class JaxonPlugin extends AbstractPlugin
         // Jaxon application default settings
         $this->setApplicationOptions($appPath . '/jaxon/Controller', '\\Jaxon\\App');
 
-        // Jaxon controller class
-        $this->setControllerClass('\\Jaxon\\Zend\\Controller');
-
         // Set the view
         $renderer = $this->xViewRenderer;
         $this->setJaxonView(function() use($renderer) {
