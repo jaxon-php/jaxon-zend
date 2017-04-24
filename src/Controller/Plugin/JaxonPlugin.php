@@ -56,14 +56,18 @@ class JaxonPlugin extends AbstractPlugin
         // Jaxon application default settings
         $this->setApplicationOptions($appPath . '/jaxon/Controller', '\\Jaxon\\App');
 
-        // Set the view
+        // Set the default view namespace
+        $this->addViewNamespace('default', '', '', 'zend');
+        $this->appConfig->setOption('options.views.default', 'default');
+
+        // Add the view renderer
         $renderer = $this->xViewRenderer;
-        $this->setJaxonView(function() use($renderer) {
+        $this->addViewRenderer('zend', function() use($renderer) {
             return new \Jaxon\Zend\View($renderer);
         });
 
-        // Set the session
-        $this->setJaxonSession(function(){
+        // Set the session manager
+        $this->setSessionManager(function(){
             return new \Jaxon\Zend\Session();
         });
     }

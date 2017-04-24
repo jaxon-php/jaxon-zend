@@ -6,17 +6,28 @@ use Zend\View\Renderer\RendererInterface;
 use Zend\View\Model\ViewModel;
 
 use Jaxon\Module\View\Store;
-use Jaxon\Module\View\Facade;
+use Jaxon\Module\Interfaces\View as ViewRenderer;
 
-class View extends Facade
+class View implements ViewRenderer
 {
     protected $renderer;
 
     public function __construct(RendererInterface $renderer)
     {
-        parent::__construct();
         $this->renderer = $renderer;
     }
+
+    /**
+     * Add a namespace to this view renderer
+     *
+     * @param string        $sNamespace         The namespace name
+     * @param string        $sDirectory         The namespace directory
+     * @param string        $sExtension         The extension to append to template names
+     *
+     * @return void
+     */
+    public function addNamespace($sNamespace, $sDirectory, $sExtension = '')
+    {}
 
     /**
      * Render a view
@@ -29,7 +40,7 @@ class View extends Facade
     {
         // Render the view
         $view = new ViewModel($store->getViewData());
-        $view->setTemplate($store->getViewPath());
+        $view->setTemplate($store->getViewName());
         $view->setTerminal(true);
         return trim($this->renderer->render($view), " \t\n");
     }
