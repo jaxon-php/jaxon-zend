@@ -6,9 +6,9 @@ use Zend\View\Renderer\RendererInterface;
 use Zend\View\Model\ViewModel;
 
 use Jaxon\Module\View\Store;
-use Jaxon\Module\Interfaces\View as ViewRenderer;
+use Jaxon\Module\Interfaces\View as ViewInterface;
 
-class View implements ViewRenderer
+class View implements ViewInterface
 {
     protected $renderer;
 
@@ -36,7 +36,7 @@ class View implements ViewRenderer
      * 
      * @return string        The string representation of the view
      */
-    public function make(Store $store)
+    public function render(Store $store)
     {
         // Render the view
         $view = new ViewModel($store->getViewData());
