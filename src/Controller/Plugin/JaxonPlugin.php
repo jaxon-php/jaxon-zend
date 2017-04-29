@@ -53,9 +53,6 @@ class JaxonPlugin extends AbstractPlugin
         // Jaxon library default settings
         $this->setLibraryOptions(!$isDebug, !$isDebug, $baseUrl . '/jaxon/js', $baseDir . '/jaxon/js');
 
-        // Jaxon application default settings
-        $this->setApplicationOptions($appPath . '/jaxon/Controller', '\\Jaxon\\App');
-
         // Set the default view namespace
         $this->addViewNamespace('default', '', '', 'zend');
         $this->appConfig->setOption('options.views.default', 'default');
