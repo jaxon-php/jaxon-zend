@@ -10,7 +10,7 @@ use Zend\View\Renderer\RendererInterface;
 
 class JaxonPlugin extends AbstractPlugin
 {
-    use \Jaxon\Module\Traits\Module;
+    use \Jaxon\Sentry\Traits\Armada;
 
     /**
      * The Zend View Renderer
@@ -47,24 +47,26 @@ class JaxonPlugin extends AbstractPlugin
         // The application web dir
         $baseDir = $_SERVER['DOCUMENT_ROOT'];
 
+        $sentry = jaxon()->sentry();
+
         // Read and set the config options from the config file
         $this->appConfig = Config::read($appPath . '/config/jaxon.config.php', 'lib', 'app');
 
         // Jaxon library default settings
-        $this->setLibraryOptions(!$isDebug, !$isDebug, $baseUrl . '/jaxon/js', $baseDir . '/jaxon/js');
+        $sentry->setLibraryOptions(!$isDebug, !$isDebug, $baseUrl . '/jaxon/js', $baseDir . '/jaxon/js');
 
         // Set the default view namespace
-        $this->addViewNamespace('default', '', '', 'zend');
+        $sentry->addViewNamespace('default', '', '', 'zend');
         $this->appConfig->setOption('options.views.default', 'default');
 
         // Add the view renderer
         $renderer = $this->xViewRenderer;
-        $this->addViewRenderer('zend', function() use($renderer) {
+        $sentry->addViewRenderer('zend', function() use($renderer) {
             return new \Jaxon\Zend\View($renderer);
         });
 
         // Set the session manager
-        $this->setSessionManager(function(){
+        $sentry->setSessionManager(function(){
             return new \Jaxon\Zend\Session();
         });
     }
