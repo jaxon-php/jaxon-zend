@@ -93,14 +93,14 @@ class JaxonPlugin extends AbstractPlugin
     public function httpResponse($code = '200')
     {
         // Send HTTP Headers
-        // $this->jaxonResponse->sendHeaders();
+        // $this->ajaxResponse()->sendHeaders();
         // Create and return a ZF2 HTTP response
         $response = new HttpResponse();
         $headers = $response->getHeaders();
-        $headers->addHeaderLine('Content-Type', $this->jaxonResponse->getContentType() .
-            '; charset=' . $this->jaxonResponse->getCharacterEncoding());
+        $headers->addHeaderLine('Content-Type', $this->ajaxResponse()->getContentType() .
+            '; charset=' . $this->ajaxResponse()->getCharacterEncoding());
         $response->setStatusCode(intval($code));
-        $response->setContent($this->jaxonResponse->getOutput());
+        $response->setContent($this->ajaxResponse()->getOutput());
         return $response;
     }
 }
