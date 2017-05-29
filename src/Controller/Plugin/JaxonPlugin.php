@@ -2,8 +2,6 @@
 
 namespace Jaxon\Zend\Controller\Plugin;
 
-use Jaxon\Config\Php as Config;
-
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Http\Response as HttpResponse;
 use Zend\View\Renderer\RendererInterface;
@@ -47,10 +45,11 @@ class JaxonPlugin extends AbstractPlugin
         // The application web dir
         $baseDir = $_SERVER['DOCUMENT_ROOT'];
 
-        $sentry = jaxon()->sentry();
+        $jaxon = jaxon();
+        $sentry = $jaxon->sentry();
 
         // Read and set the config options from the config file
-        $this->appConfig = Config::read($appPath . '/config/jaxon.config.php', 'lib', 'app');
+        $this->appConfig = $jaxon->readConfigFile($appPath . '/config/jaxon.config.php', 'lib', 'app');
 
         // Jaxon library default settings
         $sentry->setLibraryOptions(!$isDebug, !$isDebug, $baseUrl . '/jaxon/js', $baseDir . '/jaxon/js');
