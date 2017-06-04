@@ -218,7 +218,7 @@ Then it calls the `$jaxon->css()`, `$jaxon->js()` and `$jaxon->script()` functio
 
 ### The Jaxon classes
 
-The Jaxon classes must inherit from `\Jaxon\Sentry\Classes\Armada`.
+The Jaxon classes must inherit from `\Jaxon\Sentry\Armada`.
 By default, they are loaded from the `jaxon/Classes` dir at the root of the Zend Framework application, and the associated namespace is `\Jaxon\App`.
 
 This is a simple example of a Jaxon class, defined in the `jaxon/Classes/HelloWorld.php` file.
@@ -226,7 +226,7 @@ This is a simple example of a Jaxon class, defined in the `jaxon/Classes/HelloWo
 ```php
 namespace Jaxon\App;
 
-class HelloWorld extends \Jaxon\Sentry\Classes\Armada
+class HelloWorld extends \Jaxon\Sentry\Armada
 {
     public function sayHello()
     {
