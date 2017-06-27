@@ -60,12 +60,12 @@ class JaxonPlugin extends AbstractPlugin
 
         // Add the view renderer
         $renderer = $this->xViewRenderer;
-        $sentry->addViewRenderer('zend', function() use($renderer) {
+        $sentry->addViewRenderer('zend', function () use ($renderer) {
             return new \Jaxon\Zend\View($renderer);
         });
 
         // Set the session manager
-        $sentry->setSessionManager(function(){
+        $sentry->setSessionManager(function () {
             return new \Jaxon\Zend\Session();
         });
     }
