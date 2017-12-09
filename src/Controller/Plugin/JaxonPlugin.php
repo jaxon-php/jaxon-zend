@@ -27,6 +27,8 @@ class JaxonPlugin extends AbstractPlugin
     public function setZendViewRenderer(RendererInterface $xRenderer)
     {
         $this->xViewRenderer = $xRenderer;
+        // Initialize the Jaxon plugin
+        $this->_jaxonSetup();
     }
 
     /**
