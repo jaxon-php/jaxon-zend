@@ -15,6 +15,6 @@ class Module implements ConfigProviderInterface
      */
     public function getConfig()
     {
-        return array();
+        return [];
     }
 }

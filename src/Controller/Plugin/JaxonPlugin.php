@@ -8,7 +8,7 @@ use Zend\View\Renderer\RendererInterface;
 
 class JaxonPlugin extends AbstractPlugin
 {
-    use \Jaxon\Sentry\Traits\Armada;
+    use \Jaxon\Features\App;
 
     /**
      * The Zend View Renderer
@@ -27,8 +27,9 @@ class JaxonPlugin extends AbstractPlugin
     public function setZendViewRenderer(RendererInterface $xRenderer)
     {
         $this->xViewRenderer = $xRenderer;
+
         // Initialize the Jaxon plugin
-        $this->_jaxonSetup();
+        $this->jaxonSetup();
     }
 
     /**
@@ -39,49 +40,41 @@ class JaxonPlugin extends AbstractPlugin
     protected function jaxonSetup()
     {
         // The application debug option
-        $isDebug = (getenv('APP_ENV') != 'production');
+        $bIsDebug = (getenv('APP_ENV') != 'production');
         // The application root dir
-        $appPath = rtrim(getcwd(), '/');
+        $sAppPath = rtrim(getcwd(), '/');
         // The application URL
-        $baseUrl = '//' . $_SERVER['SERVER_NAME'];
+        $sJsUrl = '//' . $_SERVER['SERVER_NAME'] . '/jaxon/js';
         // The application web dir
-        $baseDir = $_SERVER['DOCUMENT_ROOT'];
+        $sJsDir = $_SERVER['DOCUMENT_ROOT'] . '/jaxon/js';
 
         $jaxon = jaxon();
-        $sentry = $jaxon->sentry();
+        $di = $jaxon->di();
 
-        // Read and set the config options from the config file
-        $this->appConfig = $jaxon->readConfigFile($appPath . '/config/jaxon.config.php', 'lib', 'app');
+        // Read the config options.
+        $aOptions = $jaxon->config()->read($sAppPath . '/config/jaxon.config.php');
+        $aLibOptions = key_exists('lib', $aOptions) ? $aOptions['lib'] : [];
+        $aAppOptions = key_exists('app', $aOptions) ? $aOptions['app'] : [];
 
-        // Jaxon library default settings
-        $sentry->setLibraryOptions(!$isDebug, !$isDebug, $baseUrl . '/jaxon/js', $baseDir . '/jaxon/js');
-
+        $viewManager = $di->getViewmanager();
         // Set the default view namespace
-        $sentry->addViewNamespace('default', '', '', 'zend');
-        $this->appConfig->setOption('options.views.default', 'default');
-
+        $viewManager->addNamespace('default', '', '', 'zend');
         // Add the view renderer
-        $renderer = $this->xViewRenderer;
-        $sentry->addViewRenderer('zend', function () use ($renderer) {
-            return new \Jaxon\Zend\View($renderer);
+        $viewManager->addRenderer('zend', function () {
+            return new \Jaxon\Zend\View($this->xViewRenderer);
         });
 
         // Set the session manager
-        $sentry->setSessionManager(function () {
+        $di->setSessionManager(function () {
             return new \Jaxon\Zend\Session();
         });
-    }
 
-    /**
-     * Set the module specific options for the Jaxon library.
-     *
-     * This method needs to set at least the Jaxon request URI.
-     *
-     * @return void
-     */
-    protected function jaxonCheck()
-    {
-        // Todo: check the mandatory options
+        $this->jaxon()
+            ->lib($aLibOptions)
+            ->app($aAppOptions)
+            // ->uri($sUri)
+            ->js(!$bIsDebug, $sJsUrl, $sJsDir, !$bIsDebug)
+            ->bootstrap(false);
     }
 
     /**
