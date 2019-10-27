@@ -5,7 +5,7 @@ namespace Jaxon\Zend;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Model\ViewModel;
 
-use Jaxon\Ui\View\Store;
+use Jaxon\Utils\View\Store;
 use Jaxon\Contracts\View as ViewContract;
 
 class View implements ViewContract
