@@ -69,12 +69,12 @@ class JaxonPlugin extends AbstractPlugin
             return new \Jaxon\Zend\Session();
         });
 
-        $this->jaxon()
+        $this->bootstrap()
             ->lib($aLibOptions)
             ->app($aAppOptions)
             // ->uri($sUri)
             ->js(!$bIsDebug, $sJsUrl, $sJsDir, !$bIsDebug)
-            ->bootstrap(false);
+            ->run(false);
     }
 
     /**
