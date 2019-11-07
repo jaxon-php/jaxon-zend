@@ -2,9 +2,8 @@
 
 return [
     'app' => [
-        'classes' => [
-            [
-                'directory' => rtrim(getcwd(), '/') . '/jaxon/Classes',
+        'directories' => [
+            rtrim(getcwd(), '/') . '/jaxon/Classes' => [
                 'namespace' => '\\Jaxon\\App',
                 // 'separator' => '', // '.' or '_'
                 // 'protected' => [],
