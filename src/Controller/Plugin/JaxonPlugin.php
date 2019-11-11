@@ -75,26 +75,33 @@ class JaxonPlugin extends AbstractPlugin
             // ->uri($sUri)
             ->js(!$bIsDebug, $sJsUrl, $sJsDir, !$bIsDebug)
             ->run(false);
+
+        // Prevent the Jaxon library from sending the response or exiting
+        $jaxon->setOption('core.response.send', false);
+        $jaxon->setOption('core.process.exit', false);
     }
 
     /**
-     * Wrap the Jaxon response into an HTTP response.
+     * Process an incoming Jaxon request, and return the response.
      *
-     * @param  $code        The HTTP Response code
-     *
-     * @return \Zend\Http\Response
+     * @return mixed
      */
-    public function httpResponse($code = '200')
+    public function processRequest()
     {
-        // Send HTTP Headers
-        // $this->ajaxResponse()->sendHeaders();
+        $jaxon = jaxon();
+        // Process the jaxon request
+        $jaxon->processRequest();
+        // Get the reponse to the request
+        $jaxonResponse = $jaxon->di()->getResponseManager()->getResponse();
+
         // Create and return a ZF2 HTTP response
+        $code = '200';
         $response = new HttpResponse();
         $headers = $response->getHeaders();
-        $headers->addHeaderLine('Content-Type', $this->ajaxResponse()->getContentType() .
-            '; charset=' . $this->ajaxResponse()->getCharacterEncoding());
+        $headers->addHeaderLine('Content-Type', $jaxonResponse->getContentType() .
+            '; charset=' . $jaxonResponse->getCharacterEncoding());
         $response->setStatusCode(intval($code));
-        $response->setContent($this->ajaxResponse()->getOutput());
+        $response->setContent($jaxonResponse->getOutput());
         return $response;
     }
 }

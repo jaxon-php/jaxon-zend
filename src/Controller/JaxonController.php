@@ -65,8 +65,7 @@ class JaxonController extends AbstractActionController
         // Process the Jaxon request
         if($this->jaxon->canProcessRequest())
         {
-            $this->jaxon->processRequest();
-            return $this->jaxon->httpResponse();
+            return $this->jaxon->processRequest();
         }
     }
 }
