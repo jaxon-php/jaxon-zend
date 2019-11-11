@@ -74,7 +74,7 @@ class JaxonPlugin extends AbstractPlugin
             ->app($aAppOptions)
             // ->uri($sUri)
             ->js(!$bIsDebug, $sJsUrl, $sJsDir, !$bIsDebug)
-            ->run(false);
+            ->run();
 
         // Prevent the Jaxon library from sending the response or exiting
         $jaxon->setOption('core.response.send', false);
