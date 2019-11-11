@@ -2,9 +2,10 @@
 
 namespace Jaxon\Zend;
 
+use Jaxon\Contracts\Session as SessionContract;
 use Zend\Session\Container;
 
-class Session
+class Session implements SessionContract
 {
     /**
      * The Zend Framework session

@@ -5,16 +5,16 @@ namespace Jaxon\Zend;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Model\ViewModel;
 
-use Jaxon\Sentry\View\Store;
-use Jaxon\Sentry\Interfaces\View as ViewInterface;
+use Jaxon\Utils\View\Store;
+use Jaxon\Contracts\View as ViewContract;
 
-class View implements ViewInterface
+class View implements ViewContract
 {
-    protected $renderer;
+    protected $xRenderer;
 
-    public function __construct(RendererInterface $renderer)
+    public function __construct(RendererInterface $xRenderer)
     {
-        $this->renderer = $renderer;
+        $this->xRenderer = $xRenderer;
     }
 
     /**
@@ -42,6 +42,6 @@ class View implements ViewInterface
         $view = new ViewModel($store->getViewData());
         $view->setTemplate($store->getViewName());
         $view->setTerminal(true);
-        return trim($this->renderer->render($view), " \t\n");
+        return trim($this->xRenderer->render($view), " \t\n");
     }
 }
