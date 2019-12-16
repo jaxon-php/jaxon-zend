@@ -11,22 +11,20 @@ class JaxonPlugin extends AbstractPlugin
     use \Jaxon\Features\App;
 
     /**
-     * The Zend View Renderer
-     *
-     * @var RendererInterface
+     * @var ContainerInterface|ServiceLocatorInterface      $container
      */
-    private $xViewRenderer = null;
+    protected $xContainer;
 
     /**
-     * Create the Jaxon view renderer, using the Zend renderer.
+     * Setup Jaxon with the view renderer and the DI container.
      *
-     * @param  $xRenderer        The Zend Framework view renderer
+     * @param ContainerInterface|ServiceLocatorInterface    $container
      *
      * @return void
      */
-    public function setZendViewRenderer(RendererInterface $xRenderer)
+    public function setContainer($xContainer)
     {
-        $this->xViewRenderer = $xRenderer;
+        $this->xContainer = $xContainer;
 
         // Initialize the Jaxon plugin
         $this->jaxonSetup();
@@ -56,18 +54,21 @@ class JaxonPlugin extends AbstractPlugin
         $aLibOptions = key_exists('lib', $aOptions) ? $aOptions['lib'] : [];
         $aAppOptions = key_exists('app', $aOptions) ? $aOptions['app'] : [];
 
-        $viewManager = $di->getViewmanager();
+        $viewManager = $di->getViewManager();
         // Set the default view namespace
         $viewManager->addNamespace('default', '', '', 'zend');
         // Add the view renderer
-        $viewManager->addRenderer('zend', function () {
-            return new \Jaxon\Zend\View($this->xViewRenderer);
+        $viewManager->addRenderer('zend', function() {
+            return new \Jaxon\Zend\View($this->xContainer->get('ViewRenderer'));
         });
 
         // Set the session manager
-        $di->setSessionManager(function () {
+        $di->setSessionManager(function() {
             return new \Jaxon\Zend\Session();
         });
+
+        // Set the framework service container wrapper
+        $di->setAppContainer(new \Jaxon\Zend\Container($this->xContainer));
 
         $this->bootstrap()
             ->lib($aLibOptions)
@@ -82,26 +83,43 @@ class JaxonPlugin extends AbstractPlugin
     }
 
     /**
+     * Get the HTTP response
+     *
+     * @param string    $code       The HTTP response code
+     *
+     * @return mixed
+     */
+    public function httpResponse($code = '200')
+    {
+        $jaxon = jaxon();
+        // Get the reponse to the request
+        $jaxonResponse = $jaxon->di()->getResponseManager()->getResponse();
+        if(!$jaxonResponse)
+        {
+            $jaxonResponse = $jaxon->getResponse();
+        }
+
+        // Create and return a ZF2 HTTP response
+        $httpResponse = new HttpResponse();
+        $headers = $httpResponse->getHeaders();
+        $headers->addHeaderLine('Content-Type', $jaxonResponse->getContentType() .
+            '; charset=' . $jaxonResponse->getCharacterEncoding());
+        $httpResponse->setStatusCode(intval($code));
+        $httpResponse->setContent($jaxonResponse->getOutput());
+        return $httpResponse;
+    }
+
+    /**
      * Process an incoming Jaxon request, and return the response.
      *
      * @return mixed
      */
     public function processRequest()
     {
-        $jaxon = jaxon();
         // Process the jaxon request
-        $jaxon->processRequest();
-        // Get the reponse to the request
-        $jaxonResponse = $jaxon->di()->getResponseManager()->getResponse();
+        jaxon()->processRequest();
 
-        // Create and return a ZF2 HTTP response
-        $code = '200';
-        $response = new HttpResponse();
-        $headers = $response->getHeaders();
-        $headers->addHeaderLine('Content-Type', $jaxonResponse->getContentType() .
-            '; charset=' . $jaxonResponse->getCharacterEncoding());
-        $response->setStatusCode(intval($code));
-        $response->setContent($jaxonResponse->getOutput());
-        return $response;
+        // Return the reponse to the request
+        return $this->httpResponse();
     }
 }

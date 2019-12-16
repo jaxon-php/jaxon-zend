@@ -17,9 +17,9 @@ class Zf2ControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         // Service Manager
-        $sm = $serviceLocator->getServiceLocator();
+        $serviceManager = $serviceLocator->getServiceLocator();
         // Controller name
-        $routeMatch = $sm->get('Application')->getMvcEvent()->getRouteMatch();
+        $routeMatch = $serviceManager->get('Application')->getMvcEvent()->getRouteMatch();
         $controllerName = $routeMatch->getParam('controller');
         // Controller class
         $controllerClass = $controllerName;
@@ -32,8 +32,8 @@ class Zf2ControllerFactory implements FactoryInterface
             $controllerClass .= 'Controller';
         }
         // Get and configure the Jaxon plugin
-        $jaxonPlugin = $sm->get('JaxonPlugin');
-        $jaxonPlugin->setZendViewRenderer($sm->get('ViewRenderer'));
+        $jaxonPlugin = $serviceManager->get('JaxonPlugin');
+        $jaxonPlugin->setContainer($serviceManager);
         // Create the Controller, passing the JaxonPlugin as parameter
         return new $controllerClass($jaxonPlugin);
     }
