@@ -15,13 +15,13 @@ Installation
 Add the following lines in the `composer.json` file, and run the `composer update` command.
 ```json
 "require": {
-    "jaxon-php/jaxon-zend": "~3.0"
+    "jaxon-php/jaxon-zend": "~3.1"
 }
 ```
 
 Add the Jaxon module to the `modules` entry in the `config/application.config.php` or `config/modules.config.php` config file.
 ```php
-    'modules' => array(
+    'modules' => [
         'Application',
         'Jaxon\Zend',
     ),
@@ -40,8 +40,8 @@ use Jaxon\Zend\Factory\Zf2ControllerFactory;
  2. Register the Jaxon plugin with the Service Manager
 
 ```php
-    'service_manager' => array(
-        'invokables' => array(
+    'service_manager' => [
+        'invokables' => [
             'JaxonPlugin' => 'Jaxon\Zend\Controller\Plugin\JaxonPlugin',
         ),
     ),
@@ -50,8 +50,8 @@ use Jaxon\Zend\Factory\Zf2ControllerFactory;
  3. Use the provided factory to create both the application controller and the Jaxon ZF controller.
 
 ```php
-    'controllers' => array(
-        'factories' => array(
+    'controllers' => [
+        'factories' => [
             'Application\Controller\Demo' => Zf2ControllerFactory::class,
             'Jaxon\Zend\Controller\Jaxon' => Zf2ControllerFactory::class,
         ),
@@ -63,14 +63,14 @@ This factory injects the Jaxon plugin into the ZF controller constructor.
  4. Route the Jaxon request URI to the plugin controller.
 
 ```php
-    'router' => array(
-        'routes' => array(
+    'router' => [
+        'routes' => [
             // Route to the Jaxon request processor
-            'jaxon' => array(
+            'jaxon' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
+                'options' => [
                     'route'    => '/jaxon',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'Jaxon\Zend\Controller\Jaxon',
                         'action'     => 'index',
                     ),
@@ -95,22 +95,22 @@ use Jaxon\Zend\Controller\JaxonController;
 2. Register the Jaxon plugin with the Service Manager
 
 ```php
-    'service_manager' => array(
-        'invokables' => array(
+    'service_manager' => [
+        'invokables' => [
             'JaxonPlugin' => JaxonPlugin::class,
-        ),
-    ),
+        ],
+    ],
 ```
 Or
 ```php
-    'service_manager' => array(
-        'factories' => array(
+    'service_manager' => [
+        'factories' => [
             JaxonPlugin::class => InvokableFactory::class,
-        ),
-        'aliases' => array(
+        ],
+        'aliases' => [
             'JaxonPlugin' => JaxonPlugin::class,
-        ),
-    ),
+        ],
+    ],
 ```
 
 3. Use the provided factory to create both the application controller and the Jaxon ZF controller.
@@ -199,14 +199,11 @@ class DemoController extends AbstractActionController
 
     public function indexAction()
     {
-        // Call the Jaxon module
-        $this->jaxon->register();
-
-        $view = new ViewModel(array(
+        $view = new ViewModel([
             'jaxonCss' => $this->jaxon->css(),
             'jaxonJs' => $this->jaxon->js(),
             'jaxonScript' => $this->jaxon->script(),
-        ));
+        ]);
         $view->setTemplate('demo/index');
         return $view;
     }

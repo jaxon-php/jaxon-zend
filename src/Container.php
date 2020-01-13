@@ -12,22 +12,22 @@
 
 namespace Jaxon\Zend;
 
-use Jaxon\Contracts\Container as ContainerContract;
+use Psr\Container\ContainerInterface;
 
-use Interop\Container\ContainerInterface;           // For ZFv3
-use Zend\ServiceManager\ServiceLocatorInterface;    // For ZFv2
+use Interop\Container\ContainerInterface as ZendContainerInterface; // For ZFv3
+use Zend\ServiceManager\ServiceLocatorInterface;                    // For ZFv2
 
-class Container implements ContainerContract
+class Container implements ContainerInterface
 {
     /**
-     * @var ContainerInterface|ServiceLocatorInterface      $container
+     * @var ZendContainerInterface|ServiceLocatorInterface      $container
      */
     protected $container;
 
     /**
      * The constructor
      *
-     * @param ContainerInterface|ServiceLocatorInterface    $container
+     * @param ZendContainerInterface|ServiceLocatorInterface    $container
      */
     public function __construct($container)
     {
