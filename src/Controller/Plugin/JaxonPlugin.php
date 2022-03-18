@@ -91,7 +91,7 @@ class JaxonPlugin extends AbstractPlugin
         $httpResponse = new HttpResponse();
         $headers = $httpResponse->getHeaders();
         $headers->addHeaderLine('Content-Type', $jaxonResponse->getContentType() .
-            '; charset=' . $this->jaxon->getCharacterEncoding());
+            '; charset=' . $this->getCharacterEncoding());
         $httpResponse->setStatusCode(intval($sCode));
         $httpResponse->setContent($jaxonResponse->getOutput());
         return $httpResponse;
