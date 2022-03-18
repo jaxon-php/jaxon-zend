@@ -8,6 +8,8 @@ use Zend\View\Model\ViewModel;
 use Jaxon\Utils\View\Store;
 use Jaxon\Contracts\View as ViewContract;
 
+use function trim;
+
 class View implements ViewContract
 {
     protected $xRenderer;

@@ -5,6 +5,8 @@ namespace Jaxon\Zend\Factory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 
+use function substr;
+
 class Zf2ControllerFactory implements FactoryInterface
 {
     /**
