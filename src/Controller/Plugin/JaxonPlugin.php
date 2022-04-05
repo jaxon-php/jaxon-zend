@@ -74,8 +74,7 @@ class JaxonPlugin extends AbstractPlugin
         $this->bootstrap()
             ->lib($aLibOptions)
             ->app($aAppOptions)
-            // ->uri($sUri)
-            ->js(!$bIsDebug, $sJsUrl, $sJsDir, !$bIsDebug)
+            ->asset(!$bIsDebug, !$bIsDebug, $sJsUrl, $sJsDir)
             ->setup();
     }
 
@@ -90,8 +89,7 @@ class JaxonPlugin extends AbstractPlugin
         // Create and return a ZF2 HTTP response
         $httpResponse = new HttpResponse();
         $headers = $httpResponse->getHeaders();
-        $headers->addHeaderLine('Content-Type', $jaxonResponse->getContentType() .
-            '; charset=' . $this->getCharacterEncoding());
+        $headers->addHeaderLine('Content-Type', $this->getContentType());
         $httpResponse->setStatusCode(intval($sCode));
         $httpResponse->setContent($jaxonResponse->getOutput());
         return $httpResponse;
