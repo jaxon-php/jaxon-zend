@@ -55,7 +55,7 @@ class JaxonPlugin extends AbstractPlugin
             return new \Jaxon\Zend\Session();
         });
         // Set the framework service container wrapper
-        $this->setAppContainer(new \Jaxon\Zend\Container($this->xContainer));
+        $this->setContainer(new \Jaxon\Zend\Container($this->xContainer));
 
         // The application debug option
         $bIsDebug = (getenv('APP_ENV') != 'production');
