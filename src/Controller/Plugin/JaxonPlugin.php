@@ -84,14 +84,14 @@ class JaxonPlugin extends AbstractPlugin
     public function httpResponse($sCode = '200')
     {
         // Get the reponse to the request
-        $jaxonResponse = $this->jaxon->getResponse();
+        $ajaxResponse = $this->ajaxResponse();
 
         // Create and return a ZF2 HTTP response
         $httpResponse = new HttpResponse();
         $headers = $httpResponse->getHeaders();
         $headers->addHeaderLine('Content-Type', $this->getContentType());
         $httpResponse->setStatusCode(intval($sCode));
-        $httpResponse->setContent($jaxonResponse->getOutput());
+        $httpResponse->setContent($ajaxResponse->getOutput());
         return $httpResponse;
     }
 }
